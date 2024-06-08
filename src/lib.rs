@@ -2,14 +2,22 @@
 //!
 //! Implementation of the functional structure the cons list in Rust.
 use crate::List::{Cons, Nil};
+use std::iter::FromIterator;
 
 #[derive(Debug, Default, PartialEq, PartialOrd)]
-enum List<T> {
+pub enum List<T> {
     #[default]
     Nil,
     Cons(T, Box<List<T>>),
 }
 
+/// Creates a `List` containing the arguments.
+/// `cons!` allows `List`s to be defined with similar syntax to `Vec`s.
+/// Create a `List` containing a given list of elements:
+/// ```
+/// println!("hello world");
+/// assert_eq!(1, 1);
+/// ```
 #[macro_export]
 macro_rules! cons {
     // Empty list
@@ -42,7 +50,7 @@ macro_rules! cons_rev {
 }
 
 // Define the iterator struct for List
-struct ListIntoIterator<T> {
+pub struct ListIntoIterator<T> {
     list: List<T>,
 }
 
@@ -91,25 +99,78 @@ impl<'a, T> Iterator for &'a List<T> {
 }
 
 impl<T> FromIterator<T> for List<T> {
-    fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
-        iter.into_iter()
-            .fold(Nil, |xs, x| List::push(x, xs))
-            .into_iter()
-            .fold(Nil, |xs, x| List::push(x, xs))
+    fn from_iter<U: IntoIterator<Item = T>>(iter: U) -> Self {
+        iter.into_iter() // Results in a reversed list
+            .fold(Nil, |xs, x| Cons(x, Box::new(xs)))
+            .into_iter() // Reverse the list again
+            .fold(Nil, |xs, x| Cons(x, Box::new(xs)))
     }
 }
 
 impl<T> List<T> {
-    fn new() -> List<T> {
+    /// Creates a new empty list of type List<T>
+    /// ```
+    /// let list: List<i32> = List::new();
+    /// assert_eq!(Nil, list);
+    /// ```
+    pub fn new() -> List<T> {
         Nil
     }
 
-    fn push(x: T, xs: List<T>) -> List<T> {
+    pub fn cons(x: T, xs: List<T>) -> List<T> {
         Cons(x, Box::new(xs))
     }
 
-    fn len(&self) -> usize {
+    pub fn reverse(list: List<T>) -> List<T> {
+        list.into_iter().fold(Nil, |xs, x| List::cons(x, xs))
+    }
+
+    pub fn len(self) -> usize {
         self.count()
+    }
+
+    /// Pushes the value x to the given list.
+    ///
+    /// # Example
+    /// ```
+    /// let mut list = cons![2, 3];
+    /// list.push(1);
+    /// assert_eq!(cons![1, 2, 3], list);
+    /// ```
+    /// Time complexity
+    /// Takes O(1) time.
+    pub fn push(&mut self, x: T) {
+        // Take ownership of self and replace it with the default Nil
+        // value. This allows us to work with the original list value without
+        // violating borrowing rules.
+        let xs = std::mem::take(self);
+        *self = Cons(x, Box::new(xs));
+    }
+
+    /// Pops the head of the list and returns it, or `None` if the list is empty
+    ///
+    /// # Examples
+    /// ```
+    /// let mut list = cons![1, 2, 3];
+    /// let head = list.pop();
+    ///
+    /// assert_eq!(Some(1), head);
+    /// assert_eq!(cons![2, 3], list);
+    /// ```
+    /// Time complexity
+    /// Takes O(1) time.
+    fn pop(&mut self) -> Option<T> {
+        // Take ownership of self and replace it with the default Nil
+        // value. This allows us to work with the original list value without
+        // violating borrowing rules.
+        let list = std::mem::take(self);
+        match list {
+            Nil => None,
+            Cons(head, tail) => {
+                *self = *tail;
+                Some(head)
+            }
+        }
     }
 }
 
@@ -198,5 +259,21 @@ mod tests {
 
         let xs = cons![Some(1), Some(2), Some(3)];
         assert_eq!(3, xs.len());
+    }
+
+    #[test]
+    fn push_test() {
+        let mut list = cons![2, 3];
+        list.push(1);
+        assert_eq!(cons![1, 2, 3], list);
+    }
+
+    #[test]
+    fn pop_test() {
+        let mut list = cons![1, 2, 3];
+        let head = list.pop();
+
+        assert_eq!(Some(1), head);
+        assert_eq!(cons![2, 3], list);
     }
 }
