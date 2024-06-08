@@ -1,4 +1,4 @@
-//! # Rust Cons List
+//! # Cons List
 //!
 //! Implementation of the functional structure the cons list in Rust.
 use crate::List::{Cons, Nil};
@@ -79,12 +79,12 @@ impl<'a, T> Iterator for &'a List<T> {
     fn next(&mut self) -> Option<Self::Item> {
         match self {
             Nil => None,
-            Cons(x, xs) => {
+            Cons(head, tail) => {
                 // replaces the contents of the reference self (which initially
                 // points to the whole list) with xs (the rest of the list).
                 // This "moves" the reference down the list.
-                let _ = std::mem::replace(self, xs);
-                Some(x)
+                let _ = std::mem::replace(self, tail);
+                Some(head)
             }
         }
     }
@@ -92,14 +92,10 @@ impl<'a, T> Iterator for &'a List<T> {
 
 impl<T> FromIterator<T> for List<T> {
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
-        let mut list: List<T> = List::new();
-
-        for x in iter {
-            list = Cons(x, Box::new(list))
-        }
-
-        // FIXME: currently returns a reversed list
-        list
+        iter.into_iter()
+            .fold(Nil, |xs, x| List::push(x, xs))
+            .into_iter()
+            .fold(Nil, |xs, x| List::push(x, xs))
     }
 }
 
@@ -159,17 +155,6 @@ mod tests {
     }
 
     #[test]
-    fn iter_copyable_test() {
-        let xs = cons![1, 2, 3];
-        let ys: List<i32> = xs.map(|x| x * 2).collect();
-
-        println!("{:?}", xs);
-        println!("{:?}", ys);
-
-        assert_eq!(cons![2, 4, 6], ys)
-    }
-
-    #[test]
     fn iter_test() {
         let xs = cons![Some(1), Some(2), Some(3)];
 
@@ -190,6 +175,14 @@ mod tests {
         let vector: Vec<i32> = xs.into_iter().collect();
 
         assert_eq!(vec![1, 2, 3], vector);
+    }
+
+    #[test]
+    fn from_iter() {
+        let xs = cons![1, 2, 3];
+        let ys: List<i32> = xs.map(|x| x * 2).collect();
+
+        assert_eq!(cons![2, 4, 6], ys)
     }
 
     #[test]
