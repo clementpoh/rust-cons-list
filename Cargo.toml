@@ -1,8 +1,10 @@
 [package]
-name = "cons-list"
+name = "cons_list"
+description = "An implementation of the cons list in Rust"
 version = "0.1.0"
 edition = "2021"
-description = "An implementation of the cons list in Rust"
+
+authors = ["Clement Poh <clement@poh.cc>"]
 license = "Apache-2.0"
 
 [dependencies]

@@ -1,9 +1,13 @@
 //! # Cons List
 //!
-//! Implementation of the functional structure the cons list in Rust.
+//! Implementation of the immutable data structure the cons list in Rust, common
+//! in functional languages.
+//!
+
 use crate::List::{Cons, Nil};
 use std::iter::FromIterator;
 
+/// An immutable list.
 #[derive(Debug, Default, PartialEq, PartialOrd)]
 pub enum List<T> {
     #[default]
@@ -13,11 +17,10 @@ pub enum List<T> {
 
 /// Creates a `List` containing the arguments.
 /// `cons!` allows `List`s to be defined with similar syntax to `Vec`s.
-/// Create a `List` containing a given list of elements:
-/// ```
-/// println!("hello world");
-/// assert_eq!(1, 1);
-/// ```
+/// Create a `List` containing a given list of elements.
+///
+/// # Examples
+///
 #[macro_export]
 macro_rules! cons {
     // Empty list
@@ -107,37 +110,92 @@ impl<T> FromIterator<T> for List<T> {
     }
 }
 
+/// Returns the empty list, synonymous with [List::new]
+///
+/// Provides convenient alternative to defining a list e.g. `cons(1, nil())`
+///
+/// # Examples
+/// ```
+/// # use cons_list::{nil, List};
+/// # use cons_list::List::{Cons, Nil};
+/// let list: List<i32> = nil();
+/// assert_eq!(list, Nil);
+/// ```
+pub fn nil<T>() -> List<T> {
+    Nil
+}
+
+/// Prepends `x` to the list `xs`.
+///
+/// Provides convenient alternative to defining a list e.g. `cons(1, nil())`
+///
+/// # Examples
+/// ```
+/// # use cons_list::cons;
+/// # use cons_list::List::{Cons, Nil};
+/// let list = cons![1, 2];
+/// let list = cons(1, list);
+/// assert_eq!(list, cons![1, 2]);
+/// ```
+pub fn cons<T>(x: T, xs: List<T>) -> List<T> {
+    Cons(x, Box::new(xs))
+}
+
 impl<T> List<T> {
-    /// Creates a new empty list of type List<T>
+    /// Creates a new empty list, synonymous with [nil]
+    ///
+    /// # Examples
     /// ```
+    /// # use cons_list::List::{Cons, Nil};
+    /// # use cons_list::{cons, List};
     /// let list: List<i32> = List::new();
-    /// assert_eq!(Nil, list);
+    /// assert_eq!(list, Nil);
     /// ```
     pub fn new() -> List<T> {
         Nil
     }
 
-    pub fn cons(x: T, xs: List<T>) -> List<T> {
-        Cons(x, Box::new(xs))
+    pub fn into_reverse(list: List<T>) -> List<T> {
+        list.into_iter().fold(Nil, |xs, x| cons(x, xs))
     }
 
-    pub fn reverse(list: List<T>) -> List<T> {
-        list.into_iter().fold(Nil, |xs, x| List::cons(x, xs))
+    pub fn reverse<'a>(list: &'a List<T>) -> List<&'a T> {
+        list.fold(Nil, |xs, x| cons(x, xs))
     }
 
-    pub fn len(self) -> usize {
+    /// Returns the length of the list
+    ///
+    /// # Examples
+    /// ```
+    /// # use cons_list::List::{Cons, Nil};
+    /// # use cons_list::cons;
+    /// let list = cons![1, 2, 3];
+    /// assert_eq!(list.len(), 3);
+    /// ```
+    /// # Time complexity
+    /// Takes O(n) time.
+    pub fn len(&self) -> usize {
         self.count()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        match self {
+            Nil => true,
+            _ => false,
+        }
     }
 
     /// Pushes the value x to the given list.
     ///
-    /// # Example
+    /// # Examples
     /// ```
+    /// # use cons_list::List::{Cons, Nil};
+    /// # use cons_list::cons;
     /// let mut list = cons![2, 3];
     /// list.push(1);
     /// assert_eq!(cons![1, 2, 3], list);
     /// ```
-    /// Time complexity
+    /// # Time complexity
     /// Takes O(1) time.
     pub fn push(&mut self, x: T) {
         // Take ownership of self and replace it with the default Nil
@@ -157,7 +215,7 @@ impl<T> List<T> {
     /// assert_eq!(Some(1), head);
     /// assert_eq!(cons![2, 3], list);
     /// ```
-    /// Time complexity
+    /// # Time complexity
     /// Takes O(1) time.
     fn pop(&mut self) -> Option<T> {
         // Take ownership of self and replace it with the default Nil
@@ -176,9 +234,7 @@ impl<T> List<T> {
 
 #[cfg(test)]
 mod tests {
-    use crate::List;
-    use crate::List::Cons;
-    use crate::List::Nil;
+    use super::*;
 
     #[test]
     fn construction() {
@@ -263,9 +319,9 @@ mod tests {
 
     #[test]
     fn push_test() {
-        let mut list = cons![2, 3];
+        let mut list = cons![2, 3, 4];
         list.push(1);
-        assert_eq!(cons![1, 2, 3], list);
+        assert_eq!(cons![1, 2, 3, 4], list);
     }
 
     #[test]
@@ -275,5 +331,13 @@ mod tests {
 
         assert_eq!(Some(1), head);
         assert_eq!(cons![2, 3], list);
+    }
+
+    #[test]
+    fn reverse_test() {
+        let list = cons![None, Some(1), Some(2), Some(3)];
+        let list = List::into_reverse(list);
+
+        assert_eq!(cons![Some(3), Some(2), Some(1), None], list);
     }
 }
