@@ -1,7 +1,7 @@
 //! # Cons List
 //!
 //! Implementation of the immutable data structure the cons list in Rust, common
-//! in functional languages.
+//! in Functional languages.
 //!
 
 use crate::List::{Cons, Nil};
