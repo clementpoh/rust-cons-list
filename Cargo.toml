@@ -1,10 +1,15 @@
 [package]
 name = "cons_list"
-description = "An implementation of the cons list in Rust"
+description = "Singly linked list in Rust, with macros for easy instantiation"
 version = "0.1.0"
 edition = "2021"
 
 authors = ["Clement Poh <clement@poh.cc>"]
 license = "Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/clementpoh/rust-cons-list"
+
+keywords = ["list", "cons", "cons_list", "collections", "functional"]
+categories = ["data-structures"]
 
 [dependencies]

@@ -21,7 +21,7 @@ pub enum List<T> {
 ///
 /// # Examples
 /// ```
-/// # use cons_list::list;
+/// # use cons_list::{List, list};
 /// # use cons_list::List::{Cons, Nil};
 /// let list = list![1, 2];
 /// assert_eq!(list, Cons(1,Box::new(Cons(2, Box::new(Nil)))));
@@ -48,7 +48,7 @@ macro_rules! list {
 ///
 /// # Examples
 /// ```
-/// # use cons_list::list_rev;
+/// # use cons_list::{list_rev, List};
 /// # use cons_list::List::{Cons, Nil};
 /// let list = list_rev![1, 2];
 /// assert_eq!(list, Cons(2,Box::new(Cons(1, Box::new(Nil)))));
@@ -57,7 +57,7 @@ macro_rules! list {
 macro_rules! list_rev {
 [ $( $x:expr ), *] => {
         {
-            let list = Nil;
+            let list = List::Nil;
             $(
                 let list = List::Cons($x, Box::new(list));
             )*
@@ -79,6 +79,7 @@ impl<T: Display> Display for List<T> {
 
         write!(f, "list![").ok();
         while let Cons(head, tail) = list {
+            // Peek to see if we're at the end of the list.
             // tail is a shared reference, is_empty borrows another reference.
             if is_empty(tail) {
                 write!(f, "{}", head).ok();
@@ -94,19 +95,19 @@ impl<T: Display> Display for List<T> {
 // IntoIterator implementation enables usage of Lists in loops.
 impl<T> IntoIterator for List<T> {
     type Item = T;
-    type IntoIter = ListIntoIterator<T>;
+    type IntoIter = ListIntoIter<T>;
 
     fn into_iter(self) -> Self::IntoIter {
-        ListIntoIterator { list: self }
+        ListIntoIter { list: self }
     }
 }
 
 // Define the iterator struct for List.
-pub struct ListIntoIterator<T> {
+pub struct ListIntoIter<T> {
     list: List<T>,
 }
 
-impl<T> Iterator for ListIntoIterator<T> {
+impl<T> Iterator for ListIntoIter<T> {
     type Item = T;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -172,7 +173,7 @@ pub fn nil<T>() -> List<T> {
 ///
 /// # Examples
 /// ```
-/// # use cons_list::{list, cons};
+/// # use cons_list::{list, cons, List};
 /// # use cons_list::List::{Cons, Nil};
 /// let list = list![2, 3];
 /// let list = cons(1, list);
@@ -233,7 +234,6 @@ impl<T: core::fmt::Debug> List<T> {
     /// # Examples
     /// ```
     /// # use cons_list::{list, List};
-    /// # use cons_list::List::{Cons, Nil};
     /// let list: List<i32> = list![];
     /// assert!(list.is_empty());
     /// ```
@@ -250,7 +250,7 @@ impl<T: core::fmt::Debug> List<T> {
     ///
     /// # Examples
     /// ```
-    /// # use cons_list::list;
+    /// # use cons_list::{list, List};
     /// # use cons_list::List::{Cons, Nil};
     /// let list = list![1, 2, 3];
     /// assert_eq!(list.len(), 3);
@@ -265,7 +265,7 @@ impl<T: core::fmt::Debug> List<T> {
     ///
     /// # Examples
     /// ```
-    /// # use cons_list::list;
+    /// # use cons_list::{list, List};
     /// # use cons_list::List::{Cons, Nil};
     /// let list = list![1, 2, 3];
     /// let last = list.last();
@@ -290,7 +290,7 @@ impl<T: core::fmt::Debug> List<T> {
     ///
     /// # Examples
     /// ```
-    /// # use cons_list::list;
+    /// # use cons_list::{list, List};
     /// # use cons_list::List::{Cons, Nil};
     /// let mut list = list![2, 3];
     /// list.push(1);
@@ -310,7 +310,7 @@ impl<T: core::fmt::Debug> List<T> {
     ///
     /// # Examples
     /// ```
-    /// # use cons_list::list;
+    /// # use cons_list::{list, List};
     /// # use cons_list::List::{Cons, Nil};
     /// let mut list = list![1, 2, 3];
     /// let head = list.pop();
@@ -381,19 +381,15 @@ mod tests {
     #[test]
     fn construction() {
         let list = Cons(2, Box::new(Nil));
-
-        println!("{:?}", list);
-
-        assert_eq!(Cons(2, Box::new(Nil)), list);
+        assert_eq!(list, Cons(2, Box::new(Nil)));
 
         let list = Cons(1, Box::new(list));
-        assert_eq!(Cons(1, Box::new(Cons(2, Box::new(Nil)))), list);
+        assert_eq!(list, Cons(1, Box::new(Cons(2, Box::new(Nil)))));
     }
 
     #[test]
     fn macro_empty() {
         let empty: List<i32> = Nil;
-
         assert_eq!(empty, list![]);
     }
 
@@ -405,12 +401,12 @@ mod tests {
     }
 
     #[test]
-    fn macro_many() {
+    fn macro_multiple() {
         let xs = Cons(2, Box::new(Cons(3, Box::new(Nil))));
-        assert_eq!(list![2, 3], xs);
+        assert_eq!(xs, list![2, 3]);
 
         let xs = Cons(1, Box::new(xs));
-        assert_eq!(list![1, 2, 3], xs);
+        assert_eq!(xs, list![1, 2, 3]);
     }
 
     #[test]
@@ -435,11 +431,22 @@ mod tests {
     }
 
     #[test]
+    fn for_loop() {
+        let xs = list![1, 2, 3, 4, 5];
+        let mut ys: List<i32> = nil();
+        for x in xs {
+            ys.push(x * 2);
+        }
+
+        assert_eq!(ys, list![10, 8, 6, 4, 2])
+    }
+
+    #[test]
     fn into_iter() {
         let xs = list![1, 2, 3];
-        let vector: Vec<i32> = xs.into_iter().collect();
+        let v: Vec<i32> = xs.into_iter().collect();
 
-        assert_eq!(vec![1, 2, 3], vector);
+        assert_eq!(v, vec![1, 2, 3]);
     }
 
     #[test]
@@ -447,7 +454,7 @@ mod tests {
         let xs = list![1, 2, 3];
         let ys: List<i32> = xs.map(|x| x * 2).collect();
 
-        assert_eq!(list![2, 4, 6], ys)
+        assert_eq!(ys, list![2, 4, 6])
     }
 
     #[test]
@@ -469,7 +476,7 @@ mod tests {
     fn push() {
         let mut list = list![2, 3, 4];
         list.push(1);
-        assert_eq!(list![1, 2, 3, 4], list);
+        assert_eq!(list, list![1, 2, 3, 4]);
     }
 
     #[test]
@@ -477,8 +484,8 @@ mod tests {
         let mut list = list![1, 2, 3];
         let head = list.pop();
 
-        assert_eq!(Some(1), head);
-        assert_eq!(list![2, 3], list);
+        assert_eq!(head, Some(1));
+        assert_eq!(list, list![2, 3]);
     }
 
     #[test]
