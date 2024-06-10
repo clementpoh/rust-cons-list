@@ -1,4 +1,4 @@
-# rust-cons-list
+# rust-list
 
 Implementation of a singly linked list in Rust. It is the recursively defined
 list that is introduced in [Chapter 15 of the Rust Book][book]. While the linked
@@ -41,8 +41,8 @@ A macro `list!` is defined to allow for easy instantiation. Otherwise the
 `cons()` and `nil()` functions are provided as an alternative.
 
 ``` rust
-  use cons_list::{List, list, nil, cons};
-  use cons_list::List::{Cons, Nil};
+  use rust_list::{List, list, nil, cons};
+  use rust_list::List::{Cons, Nil};
 
   let xs = list![1, 2, 3];
   let ys = cons(1, cons(2, cons(3, nil())));

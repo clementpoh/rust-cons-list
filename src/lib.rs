@@ -1,4 +1,4 @@
-//! # rust-cons-list
+//! # rust-list
 //!
 //! Implementation of a singly linked, recursively defined list.
 //!
@@ -14,8 +14,8 @@
 //! `cons()` and `nil()` functions are provided as an alternative.
 //!
 //! ``` rust
-//! use cons_list::{List, list, nil, cons};
-//! use cons_list::List::{Cons, Nil};
+//! use rust_list::{List, list, nil, cons};
+//! use rust_list::List::{Cons, Nil};
 //!
 //! let mut xs = list![1, 2, 3];
 //! let ys = cons(1, cons(2, cons(3, nil())));
@@ -61,8 +61,8 @@ pub enum List<T> {
 ///
 /// # Examples
 /// ```
-/// # use cons_list::{List, list};
-/// # use cons_list::List::{Cons, Nil};
+/// # use rust_list::{List, list};
+/// # use rust_list::List::{Cons, Nil};
 /// let list = list![1, 2];
 /// assert_eq!(list, Cons(1,Box::new(Cons(2, Box::new(Nil)))));
 /// ```
@@ -88,8 +88,8 @@ macro_rules! list {
 ///
 /// # Examples
 /// ```
-/// # use cons_list::{list_rev, List};
-/// # use cons_list::List::{Cons, Nil};
+/// # use rust_list::{list_rev, List};
+/// # use rust_list::List::{Cons, Nil};
 /// let list = list_rev![1, 2];
 /// assert_eq!(list, Cons(2,Box::new(Cons(1, Box::new(Nil)))));
 /// ```
@@ -198,8 +198,8 @@ impl<T> FromIterator<T> for List<T> {
 ///
 /// # Examples
 /// ```
-/// # use cons_list::{nil, List};
-/// # use cons_list::List::{Cons, Nil};
+/// # use rust_list::{nil, List};
+/// # use rust_list::List::{Cons, Nil};
 /// let list: List<i32> = nil();
 /// assert_eq!(list, Nil);
 /// ```
@@ -213,8 +213,8 @@ pub fn nil<T>() -> List<T> {
 ///
 /// # Examples
 /// ```
-/// # use cons_list::{list, cons, List};
-/// # use cons_list::List::{Cons, Nil};
+/// # use rust_list::{list, cons, List};
+/// # use rust_list::List::{Cons, Nil};
 /// let list = list![2, 3];
 /// let list = cons(1, list);
 /// assert_eq!(list, list![1, 2, 3]);
@@ -228,8 +228,8 @@ impl<T> List<T> {
     ///
     /// # Examples
     /// ```
-    /// # use cons_list::List::{Cons, Nil};
-    /// # use cons_list::{cons, List};
+    /// # use rust_list::List::{Cons, Nil};
+    /// # use rust_list::{cons, List};
     /// let list: List<i32> = List::new();
     /// assert_eq!(list, Nil);
     /// ```
@@ -241,8 +241,8 @@ impl<T> List<T> {
     ///
     /// # Examples
     /// ```
-    /// # use cons_list::{List, list};
-    /// # use cons_list::List::{Cons, Nil};
+    /// # use rust_list::{List, list};
+    /// # use rust_list::List::{Cons, Nil};
     /// let list = list![None, Some(1), Some(2), Some(3)];
     /// let list = List::into_rev(list);
     /// assert_eq!(list![Some(3), Some(2), Some(1), None], list);
@@ -257,8 +257,8 @@ impl<T> List<T> {
     ///
     /// # Examples
     /// ```
-    /// # use cons_list::{List, list};
-    /// # use cons_list::List::{Cons, Nil};
+    /// # use rust_list::{List, list};
+    /// # use rust_list::List::{Cons, Nil};
     /// let list = list![None, Some(1), Some(2), Some(3)];
     /// let list = List::borrow_rev(&list);
     /// assert_eq!(list![&Some(3), &Some(2), &Some(1), &None], list);
@@ -273,7 +273,7 @@ impl<T> List<T> {
     ///
     /// # Examples
     /// ```
-    /// # use cons_list::{list, List};
+    /// # use rust_list::{list, List};
     /// let list: List<i32> = list![];
     /// assert!(list.is_empty());
     /// ```
@@ -290,8 +290,8 @@ impl<T> List<T> {
     ///
     /// # Examples
     /// ```
-    /// # use cons_list::{list, List};
-    /// # use cons_list::List::{Cons, Nil};
+    /// # use rust_list::{list, List};
+    /// # use rust_list::List::{Cons, Nil};
     /// let list = list![1, 2, 3];
     /// assert_eq!(list.len(), 3);
     /// ```
@@ -305,8 +305,8 @@ impl<T> List<T> {
     ///
     /// # Examples
     /// ```
-    /// # use cons_list::{list, List};
-    /// # use cons_list::List::{Cons, Nil};
+    /// # use rust_list::{list, List};
+    /// # use rust_list::List::{Cons, Nil};
     /// let list = list![1, 2, 3];
     /// let last = list.last();
     ///
@@ -330,8 +330,8 @@ impl<T> List<T> {
     ///
     /// # Examples
     /// ```
-    /// # use cons_list::{list, List};
-    /// # use cons_list::List::{Cons, Nil};
+    /// # use rust_list::{list, List};
+    /// # use rust_list::List::{Cons, Nil};
     /// let mut list = list![2, 3];
     /// list.push(1);
     /// assert_eq!(list![1, 2, 3], list);
@@ -350,8 +350,8 @@ impl<T> List<T> {
     ///
     /// # Examples
     /// ```
-    /// # use cons_list::{list, List};
-    /// # use cons_list::List::{Cons, Nil};
+    /// # use rust_list::{list, List};
+    /// # use rust_list::List::{Cons, Nil};
     /// let mut list = list![1, 2, 3];
     /// let head = list.pop();
     ///
@@ -376,8 +376,8 @@ impl<T> List<T> {
     ///
     /// # Examples
     /// ```
-    /// # use cons_list::{List, list};
-    /// # use cons_list::List::{Cons, Nil};
+    /// # use rust_list::{List, list};
+    /// # use rust_list::List::{Cons, Nil};
     /// let mut xs = list![1, 2, 3];
     /// let ys = list![4, 5, 6];
     ///
@@ -400,8 +400,8 @@ impl<T> List<T> {
     ///
     /// # Examples
     /// ```
-    /// # use cons_list::{List, list};
-    /// # use cons_list::List::{Cons, Nil};
+    /// # use rust_list::{List, list};
+    /// # use rust_list::List::{Cons, Nil};
     /// let mut list = list![None, Some(1), Some(2), Some(3)];
     /// list.reverse();
     /// assert_eq!(list![Some(3), Some(2), Some(1), None], list);
