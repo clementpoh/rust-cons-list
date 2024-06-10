@@ -3,7 +3,9 @@
 //! Implementation of the immutable data structure the cons list in Rust, common
 //! in Functional languages.
 //!
-use crate::List::{Cons, Nil};
+use std::fmt::Display;
+
+pub use crate::List::{Cons, Nil};
 
 /// An immutable list.
 #[derive(Debug, Default, PartialEq, PartialOrd)]
@@ -28,17 +30,17 @@ pub enum List<T> {
 macro_rules! list {
     // Empty list.
     [] => {
-        Nil
+        List::Nil
     };
 
     // Singleton list.
     [ $head:expr ] => {
-        Cons($head, Box::new(Nil))
+        List::Cons($head, Box::new(Nil))
     };
 
     // Recursive case: more than one item.
     [$head:expr, $($tail:expr),+] => {
-        Cons($head, Box::new( list!($($tail), +) ))
+        List::Cons($head, Box::new( list!($($tail), +) ))
     };
  }
 
@@ -57,11 +59,36 @@ macro_rules! list_rev {
         {
             let list = Nil;
             $(
-                let list = Cons($x, Box::new(list));
+                let list = List::Cons($x, Box::new(list));
             )*
             list
         }
     };
+}
+
+impl<T: Display> Display for List<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let mut list = self;
+
+        fn is_empty<T>(list: &Box<List<T>>) -> bool {
+            match **list {
+                List::Nil => true,
+                List::Cons(_, _) => false,
+            }
+        }
+
+        write!(f, "list![").ok();
+        while let Cons(head, tail) = list {
+            // tail is a shared reference, is_empty borrows another reference.
+            if is_empty(tail) {
+                write!(f, "{}", head).ok();
+            } else {
+                write!(f, "{}, ", head).ok();
+            }
+            list = tail;
+        }
+        write!(f, "]")
+    }
 }
 
 // IntoIterator implementation enables usage of Lists in loops.
@@ -136,7 +163,7 @@ impl<T> FromIterator<T> for List<T> {
 /// assert_eq!(list, Nil);
 /// ```
 pub fn nil<T>() -> List<T> {
-    Nil
+    List::Nil
 }
 
 /// Prepends `x` to the list `xs`.
@@ -152,7 +179,7 @@ pub fn nil<T>() -> List<T> {
 /// assert_eq!(list, list![1, 2, 3]);
 /// ```
 pub fn cons<T>(x: T, xs: List<T>) -> List<T> {
-    Cons(x, Box::new(xs))
+    List::Cons(x, Box::new(xs))
 }
 
 impl<T: core::fmt::Debug> List<T> {
@@ -378,7 +405,7 @@ mod tests {
     }
 
     #[test]
-    fn macro_test() {
+    fn macro_many() {
         let xs = Cons(2, Box::new(Cons(3, Box::new(Nil))));
         assert_eq!(list![2, 3], xs);
 
@@ -387,7 +414,13 @@ mod tests {
     }
 
     #[test]
-    fn iter_test() {
+    fn display() {
+        let xs = list![1, 2, 3, 4, 5];
+        assert_eq!("list![1, 2, 3, 4, 5]", xs.to_string());
+    }
+
+    #[test]
+    fn iter() {
         let xs = list![Some(1), Some(2), Some(3)];
 
         for x in xs.enumerate() {
@@ -402,7 +435,7 @@ mod tests {
     }
 
     #[test]
-    fn into_iter_test() {
+    fn into_iter() {
         let xs = list![1, 2, 3];
         let vector: Vec<i32> = xs.into_iter().collect();
 
@@ -418,7 +451,7 @@ mod tests {
     }
 
     #[test]
-    fn len_test() {
+    fn len() {
         let xs: List<i32> = list![];
         assert_eq!(0, xs.len());
 
@@ -433,14 +466,14 @@ mod tests {
     }
 
     #[test]
-    fn push_test() {
+    fn push() {
         let mut list = list![2, 3, 4];
         list.push(1);
         assert_eq!(list![1, 2, 3, 4], list);
     }
 
     #[test]
-    fn pop_test() {
+    fn pop() {
         let mut list = list![1, 2, 3];
         let head = list.pop();
 
@@ -473,5 +506,33 @@ mod tests {
         xs.append(ys);
 
         assert_eq!(xs, list![Some(1), Some(2), Some(3), Some(4), Some(5)]);
+    }
+
+    #[test]
+    fn filter() {
+        let xs = list![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        let ys: List<i32> = xs.into_iter().filter(|x| *x <= 5).collect();
+        let zs: List<&i32> = ys.filter(|y| **y >= 3).collect();
+
+        assert_eq!(ys, list![1, 2, 3, 4, 5]);
+        assert_eq!(zs, list![&3, &4, &5]);
+    }
+
+    #[test]
+    fn map() {
+        let xs = list![1, 2, 3, 4, 5];
+        let ys: List<i32> = xs.map(|x| x * 2).collect();
+
+        assert_eq!(ys, list![2, 4, 6, 8, 10]);
+    }
+
+    #[test]
+    fn fold() {
+        let xs = list![Some(1), None, Some(3), None, Some(5)];
+        let sum = xs.fold(0, |sum, x| match x {
+            Some(y) => y + sum,
+            None => sum,
+        });
+        assert_eq!(sum, 9);
     }
 }
