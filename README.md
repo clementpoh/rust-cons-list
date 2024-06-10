@@ -1,9 +1,9 @@
 # rust-cons-list
 
-Implementation of an e singly linked list in Rust. It is the recursively
-defined list that is introduced in [Chapter 15 of the Rust Book][book]. While
-the linked list is disfavored in Rust, it's a familiar structure to many
-functional programmers.
+Implementation of a singly linked list in Rust. It is the recursively defined
+list that is introduced in [Chapter 15 of the Rust Book][book]. While the linked
+list is disfavored in Rust, it's a familiar structure to many functional
+programmers.
 
 This crate extends the implementation of the basic cons list found straight in
 the Rust Book to offer some conveniences similar to those implemented for the
