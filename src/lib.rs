@@ -10,7 +10,8 @@
 //!
 //! ### Creating a new list
 //!
-//! A macro `list!` is defined to allow for easy instantiation. Otherwise the `cons()` and `nil()` functions are provided as an alternative.
+//! A macro `list!` is defined to allow for easy instantiation. Otherwise the
+//! `cons()` and `nil()` functions are provided as an alternative.
 //!
 //! ``` rust
 //! use cons_list::{List, list, nil, cons};
