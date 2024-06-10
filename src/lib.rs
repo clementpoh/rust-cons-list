@@ -222,7 +222,7 @@ pub fn cons<T>(x: T, xs: List<T>) -> List<T> {
     List::Cons(x, Box::new(xs))
 }
 
-impl<T: core::fmt::Debug> List<T> {
+impl<T> List<T> {
     /// Creates a new empty list, synonymous with [nil]
     ///
     /// # Examples
