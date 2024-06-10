@@ -36,10 +36,10 @@
 //! xs.reverse();
 //! assert_eq!(xs, list![6, 5, 4, 3, 2, 1]);
 //!
-//! let ys: List<i32> = xs.map(|x| x * 2).collect();
+//! let ys: List<_> = xs.map(|x| x * 2).collect();
 //! assert_eq!(ys, list![12, 10, 8, 6, 4, 2]);
 //!
-//! let zs: List<i32> = xs.into_iter().filter(|x| *x < 4).collect();
+//! let zs: List<_> = xs.into_iter().filter(|x| *x < 4).collect();
 //! assert_eq!(zs, list![3, 2, 1]);
 //! assert_eq!(zs.fold(0, |acc, x| acc + x * 2), 12);
 //! ```
@@ -484,7 +484,7 @@ mod tests {
     #[test]
     fn into_iter() {
         let xs = list![1, 2, 3];
-        let v: Vec<i32> = xs.into_iter().collect();
+        let v: Vec<_> = xs.into_iter().collect();
 
         assert_eq!(v, vec![1, 2, 3]);
     }
@@ -492,7 +492,7 @@ mod tests {
     #[test]
     fn from_iter() {
         let xs = list![1, 2, 3];
-        let ys: List<i32> = xs.map(|x| x * 2).collect();
+        let ys: List<_> = xs.map(|x| x * 2).collect();
 
         assert_eq!(ys, list![2, 4, 6])
     }
@@ -558,8 +558,8 @@ mod tests {
     #[test]
     fn filter() {
         let xs = list![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-        let ys: List<i32> = xs.into_iter().filter(|x| *x <= 5).collect();
-        let zs: List<&i32> = ys.filter(|y| **y >= 3).collect();
+        let ys: List<_> = xs.into_iter().filter(|x| *x <= 5).collect();
+        let zs: List<_> = ys.filter(|y| **y >= 3).collect();
 
         assert_eq!(ys, list![1, 2, 3, 4, 5]);
         assert_eq!(zs, list![&3, &4, &5]);
@@ -568,7 +568,7 @@ mod tests {
     #[test]
     fn map() {
         let xs = list![1, 2, 3, 4, 5];
-        let ys: List<i32> = xs.map(|x| x * 2).collect();
+        let ys: List<_> = xs.map(|x| x * 2).collect();
 
         assert_eq!(ys, list![2, 4, 6, 8, 10]);
     }

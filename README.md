@@ -71,10 +71,10 @@ A macro `list!` is defined to allow for easy instantiation. Otherwise the
   xs.reverse();
   assert_eq!(xs, list![6, 5, 4, 3, 2, 1]);
 
-  let ys: List<i32> = xs.map(|x| x * 2).collect();
+  let ys: List<_> = xs.map(|x| x * 2).collect();
   assert_eq!(ys, list![12, 10, 8, 6, 4, 2]);
 
-  let zs: List<i32> = xs.into_iter().filter(|x| *x < 4).collect();
+  let zs: List<_> = xs.into_iter().filter(|x| *x < 4).collect();
   assert_eq!(zs, list![3, 2, 1]);
 
   assert_eq!(zs.fold(0, |acc, x| acc + x * 2), 12);
