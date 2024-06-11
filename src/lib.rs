@@ -4,14 +4,14 @@
 //!
 //! This crate extends the implementation of the basic cons list found straight in
 //! the Rust Book to offer some conveniences similar to those implemented for the
-//! `Vec`. Specifically, a `list!` macro for easy instantiation and iteration.
+//! `Vec`. Specifically, a [list!] macro for easy instantiation and iteration.
 //!
 //! ## Usage
 //!
 //! ### Creating a new list
 //!
-//! A macro `list!` is defined to allow for easy instantiation. Otherwise the
-//! `cons()` and `nil()` functions are provided as an alternative.
+//! A macro [list!] is defined to allow for easy instantiation. Otherwise the
+//! [cons()] and [nil()] functions are provided as an alternative.
 //!
 //! ``` rust
 //! use rust_list::{List, list, nil, cons};
@@ -47,9 +47,8 @@
 //! assert_eq!(zs, list![3, 2, 1]);
 //! assert_eq!(zs.fold(0, |acc, x| acc + x * 2), 12);
 //! ```
-use std::fmt::Display;
-
 pub use crate::List::{Cons, Nil};
+use std::fmt::Display;
 
 /// An immutable list.
 #[derive(Debug, Default, PartialEq, PartialOrd)]
