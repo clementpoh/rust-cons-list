@@ -20,6 +20,7 @@
 //! let mut xs = list![1, 2, 3];
 //! let ys = cons(1, cons(2, cons(3, nil())));
 //! assert_eq!(xs, ys);
+//! assert_eq!("list![1, 2, 3]", xs.to_string());
 //!
 //! // Defined manually
 //! assert_eq!(xs, Cons(1, Box::new(Cons(2, Box::new(Cons(3, Box::new(Nil)))))));
