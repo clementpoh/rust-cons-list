@@ -30,7 +30,7 @@
 //! assert_eq!(xs, list![0, 1, 2, 3]);
 //! assert_eq!(xs.len(), 4);
 //! assert_eq!(xs.is_empty(), false);
-//! assert_eq!(Some(&3), last);
+//! assert_eq!(Some(&3), xs.last());
 //!
 //! xs.pop();
 //! assert_eq!(xs, list![1, 2, 3]);
