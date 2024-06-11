@@ -56,7 +56,7 @@ use std::fmt::Display;
 #[derive(Debug, Default, PartialEq, PartialOrd)]
 pub enum List<T> {
     #[default]
-    /// The empty list
+    /// The empty list.
     Nil,
     /// A [List] node containing `T`, linking to the next node.
     Cons(T, Box<List<T>>),
