@@ -5,8 +5,8 @@ list that is introduced in [Chapter 15 of the Rust Book][book]. While the linked
 list is disfavored in Rust, it's a familiar structure to many functional
 programmers.
 
-This crate extends the implementation of the basic cons list found straight in
-the Rust Book to offer some conveniences similar to those implemented for the
+This crate extends the implementation of the basic cons list found straight out
+of the Rust Book to offer some conveniences similar to those implemented for the
 `Vec`. Specifically, a `list!` macro for easy instantiation and manual
 implementations of the following traits:
 

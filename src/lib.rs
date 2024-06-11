@@ -4,8 +4,8 @@
 //!
 //! This crate extends the implementation of the basic cons list found straight
 //! out of the Rust Book to offer some conveniences similar to those implemented
-//! for the `Vec`. Specifically, a [list!] macro for easy instantiation,
-//! iteration and collection.
+//! for the `Vec`. Specifically, a [list!] macro for easy instantiation, as well
+//! as implementations for display, iteration and collection.
 //!
 //! ## Usage
 //!
