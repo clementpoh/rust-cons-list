@@ -59,6 +59,7 @@ A macro `list!` is defined to allow for easy instantiation. Otherwise the
   let mut xs = list![1, 2, 3];
   xs.push(0);
   assert_eq!(xs, list![0, 1, 2, 3]);
+  assert_eq!(Some(&3), xs.last());
 
   assert_eq!(xs.len(), 4);
   assert_eq!(xs.is_empty(), false);

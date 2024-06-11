@@ -2,9 +2,10 @@
 //!
 //! Implementation of a singly linked, recursively defined list.
 //!
-//! This crate extends the implementation of the basic cons list found straight in
-//! the Rust Book to offer some conveniences similar to those implemented for the
-//! `Vec`. Specifically, a [list!] macro for easy instantiation and iteration.
+//! This crate extends the implementation of the basic cons list found straight
+//! out of the Rust Book to offer some conveniences similar to those implemented
+//! for the `Vec`. Specifically, a [list!] macro for easy instantiation,
+//! iteration and collection.
 //!
 //! ## Usage
 //!
@@ -29,6 +30,7 @@
 //! assert_eq!(xs, list![0, 1, 2, 3]);
 //! assert_eq!(xs.len(), 4);
 //! assert_eq!(xs.is_empty(), false);
+//! assert_eq!(Some(&3), last);
 //!
 //! xs.pop();
 //! assert_eq!(xs, list![1, 2, 3]);
@@ -54,7 +56,9 @@ use std::fmt::Display;
 #[derive(Debug, Default, PartialEq, PartialOrd)]
 pub enum List<T> {
     #[default]
+    /// The empty list
     Nil,
+    /// A [List] node containing `T`, linking to the next node.
     Cons(T, Box<List<T>>),
 }
 
@@ -160,7 +164,7 @@ impl<T> Iterator for ListIntoIter<T> {
         let list = std::mem::take(&mut self.list);
         match list {
             Cons(head, tail) => {
-                self.list = *tail; // Move ownership of the tail back to self.list
+                self.list = *tail; // Move ownership of the tail back to self.
                 Some(head)
             }
             Nil => None,
@@ -176,7 +180,7 @@ impl<'a, T> Iterator for &'a List<T> {
         match self {
             Nil => None,
             Cons(head, tail) => {
-                // replaces the contents of the reference self (which initially
+                // Replaces the contents of the reference self (which initially
                 // points to the whole list) with xs (the rest of the list).
                 // This "moves" the reference down the list.
                 let _ = std::mem::replace(self, tail);
@@ -188,14 +192,14 @@ impl<'a, T> Iterator for &'a List<T> {
 
 impl<T> FromIterator<T> for List<T> {
     fn from_iter<U: IntoIterator<Item = T>>(iter: U) -> Self {
-        iter.into_iter() // Results in a reversed list
+        iter.into_iter() // Results in a reversed list.
             .fold(Nil, |xs, x| cons(x, xs))
-            .into_iter() // Reverse the list again
+            .into_iter() // Reverse the list again.
             .fold(Nil, |xs, x| cons(x, xs))
     }
 }
 
-/// Returns the empty list, synonymous with [List::new].
+/// Returns the empty list, synonymous with [List::new()].
 ///
 /// Provides convenient alternative to defining a list e.g. `cons(1, nil())`.
 ///
@@ -318,7 +322,6 @@ impl<T> List<T> {
     /// # Time complexity
     /// Takes O(n) time.
     pub fn last(&self) -> Option<&T> {
-        // Take ownership of self and replace it with the default Nil value.
         let mut last = None;
         let mut next = self;
         while let Cons(x, xs) = next {
