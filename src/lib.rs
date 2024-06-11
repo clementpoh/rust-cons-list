@@ -145,7 +145,7 @@ impl<T> IntoIterator for List<T> {
     }
 }
 
-// Define the iterator struct for List.
+/// Iterator struct for the IntoIter implementation.
 pub struct ListIntoIter<T> {
     list: List<T>,
 }
@@ -195,9 +195,9 @@ impl<T> FromIterator<T> for List<T> {
     }
 }
 
-/// Returns the empty list, synonymous with [List::new]
+/// Returns the empty list, synonymous with [List::new].
 ///
-/// Provides convenient alternative to defining a list e.g. `cons(1, nil())`
+/// Provides convenient alternative to defining a list e.g. `cons(1, nil())`.
 ///
 /// # Examples
 /// ```
@@ -212,7 +212,7 @@ pub fn nil<T>() -> List<T> {
 
 /// Prepends `x` to the list `xs`.
 ///
-/// Provides convenient alternative to defining a list e.g. `cons(1, nil())`
+/// Provides convenient alternative to defining a list e.g. `cons(1, nil())`.
 ///
 /// # Examples
 /// ```
@@ -227,7 +227,7 @@ pub fn cons<T>(x: T, xs: List<T>) -> List<T> {
 }
 
 impl<T> List<T> {
-    /// Creates a new empty list, synonymous with [nil]
+    /// Creates a new empty list, synonymous with [nil].
     ///
     /// # Examples
     /// ```
@@ -240,7 +240,7 @@ impl<T> List<T> {
         Nil
     }
 
-    /// Takes ownership of the input and returns a reverse of its elements
+    /// Takes ownership of the input and returns a reverse of its elements.
     ///
     /// # Examples
     /// ```
@@ -256,7 +256,7 @@ impl<T> List<T> {
         list.into_iter().fold(Nil, |xs, x| cons(x, xs))
     }
 
-    /// Returns a reversed list of references to the input list
+    /// Returns a reversed list of references to the input list.
     ///
     /// # Examples
     /// ```
@@ -289,7 +289,7 @@ impl<T> List<T> {
         }
     }
 
-    /// Returns the length of the list
+    /// Returns the length of the list.
     ///
     /// # Examples
     /// ```
@@ -349,7 +349,7 @@ impl<T> List<T> {
         *self = Cons(x, Box::new(xs));
     }
 
-    /// Pops the head of the list and returns it, or `None` if the list is empty
+    /// Pops and returns the head of the list, or `None` if the list is empty.
     ///
     /// # Examples
     /// ```
@@ -375,7 +375,7 @@ impl<T> List<T> {
         }
     }
 
-    /// Appends `list` to self;
+    /// Appends `list` to self.
     ///
     /// # Examples
     /// ```
@@ -399,7 +399,7 @@ impl<T> List<T> {
         let _ = std::mem::replace(curr, list);
     }
 
-    /// Reverses the order of elements in the list
+    /// Reverses the order of elements in the list.
     ///
     /// # Examples
     /// ```
