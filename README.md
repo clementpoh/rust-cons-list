@@ -7,8 +7,8 @@ programmers.
 
 This crate extends the implementation of the basic cons list found straight in
 the Rust Book to offer some conveniences similar to those implemented for the
-`Vec`. Specifically, a `list!` macro for easy instantiation manual implementations
-of the following traits:
+`Vec`. Specifically, a `list!` macro for easy instantiation and manual
+implementations of the following traits:
 
 * `Display`
 * `Iterator`
@@ -67,6 +67,7 @@ A macro `list!` is defined to allow for easy instantiation. Otherwise the
 
   xs.append(list![4, 5, 6]);
   assert_eq!(xs, list![1, 2, 3, 4, 5, 6]);
+  assert_eq!("list![1, 2, 3, 4, 5, 6]", xs.to_string());
 
   xs.reverse();
   assert_eq!(xs, list![6, 5, 4, 3, 2, 1]);
