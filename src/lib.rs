@@ -418,6 +418,38 @@ impl<T> List<T> {
         let list = std::mem::take(self);
         *self = list.into_iter().fold(Nil, |xs, x| cons(x, xs))
     }
+
+    /// Folds every element right associatively into an accumulator applying an
+    /// operation, returning the result.
+    ///
+    /// # Examples
+    /// ```
+    /// # use rust_list::{List, list, cons};
+    /// # use rust_list::List::{Cons, Nil};
+    /// let xs = list![Some(10), None, Some(3), None, Some(5)];
+    /// let id = xs.rfold(Nil, |ys, x| cons(x, ys));
+    /// assert_eq!(id, list![Some(10), None, Some(3), None, Some(5)]);
+    /// ```
+    ///
+    pub fn rfold<U, F>(self, init: U, mut f: F) -> U
+    where
+        F: FnMut(U, T) -> U,
+    {
+        fn recurse<T, U, F>(list: List<T>, init: U, f: &mut F) -> U
+        where
+            F: FnMut(U, T) -> U,
+        {
+            match list {
+                Nil => init,
+                Cons(x, xs) => {
+                    let y = recurse(*xs, init, f);
+                    f(y, x)
+                }
+            }
+        }
+
+        recurse(self, init, &mut f)
+    }
 }
 
 #[cfg(test)]
@@ -587,5 +619,13 @@ mod tests {
             None => sum,
         });
         assert_eq!(sum, 9);
+    }
+
+    #[test]
+    fn rfold() {
+        let xs = list![Some(10), None, Some(3), None, Some(5)];
+        let id = xs.rfold(Nil, |ys, x| cons(x, ys));
+
+        assert_eq!(id, list![Some(10), None, Some(3), None, Some(5)]);
     }
 }
