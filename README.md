@@ -81,6 +81,9 @@ A macro `list!` is defined to allow for easy instantiation. Otherwise the
   assert_eq!(zs, list![3, 2, 1]);
 
   assert_eq!(zs.fold(0, |acc, x| acc + x * 2), 12);
+
+  let id = list![1, 2, 3].rfold(Nil, |xs, x| cons(x, xs));
+  assert_eq!(id, list![1, 2, 3]);
 ```
 
 [book]: https://doc.rust-lang.org/book/ch15-01-box.html#more-information-about-the-cons-list

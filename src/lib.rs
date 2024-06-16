@@ -48,6 +48,9 @@
 //! let zs: List<_> = xs.into_iter().filter(|x| *x < 4).collect();
 //! assert_eq!(zs, list![3, 2, 1]);
 //! assert_eq!(zs.fold(0, |acc, x| acc + x * 2), 12);
+//!
+//! let id = list![1, 2, 3].rfold(Nil, |xs, x| cons(x, xs));
+//! assert_eq!(id, list![1, 2, 3]);
 //! ```
 pub use crate::List::{Cons, Nil};
 use std::fmt::Display;
@@ -427,10 +430,11 @@ impl<T> List<T> {
     /// # use rust_list::{List, list, cons};
     /// # use rust_list::List::{Cons, Nil};
     /// let xs = list![Some(10), None, Some(3), None, Some(5)];
-    /// let id = xs.rfold(Nil, |ys, x| cons(x, ys));
+    /// let id = xs.rfold(Nil, |xs, x| cons(x, xs));
     /// assert_eq!(id, list![Some(10), None, Some(3), None, Some(5)]);
     /// ```
-    ///
+    /// # Time complexity
+    /// Takes O(n) time.
     pub fn rfold<U, F>(self, init: U, mut f: F) -> U
     where
         F: FnMut(U, T) -> U,
